@@ -26,7 +26,7 @@ pulling out what it needs from the preloaded HTML::
   AngryLoader.initialize({
     urls: ['/', '/blog', '/mega'],
     selector: '.main-content',  // default: 'body'
-    replaceWithin: ['<-- START_REPLACE -->', '<-- END_REPLACE -->']  // default: ['<body>', '</body'>]
+    replaceWithin: ['<!-- START_REPLACE -->', '<!-- END_REPLACE -->']  // default: ['<body>', '</body'>]
   });
 
 It will pull out everything within, but not including, these "bookend" strings, and populate
