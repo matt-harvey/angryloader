@@ -73,7 +73,7 @@ var AngryLoader = function($) {
 
   function load(url) {
     var cached = cache[url];
-    doc.find('title').html(cached.title);
+    doc.prop('title', cached.title);
     $(opts.selector).html(cached.content);
     $('html, body').animate({ scrollTop: 0 }, 0);
     notifyLoaded();
