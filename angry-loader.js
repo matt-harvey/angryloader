@@ -36,7 +36,7 @@ var AngryLoader = function($) {
     }
   }
 
-  function initializeLinks(elems) {
+  function initializeLinks() {
     $('a').not('.js-angry-loader-initialized').click(function(event) {
       var url = $(this).attr('href');
       if (url in cache) {
