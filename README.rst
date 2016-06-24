@@ -16,11 +16,11 @@ Tell AngryLoader the list of URLs you want to be fast, like so::
 When someone first visits your site, and after the initially visited page has
 loaded normally, AngryLoader AJAX-requests HTML from *all* the URLs you've
 given it, and caches their content in memory. It also looks in the retrieved
-content for a ``<title>`` tag, and caches the content of that as well, if found. When
-the user clicks on any link that has one of these *exact* URLs as its ``href``
-attribute, the browser will grab the cached page, swap out the current
-``<body>`` content with the ``<body>`` content of the cached page, and set
-the title it found for that page. Any other links will be handled normally.
+content of each page for a ``<title>`` tag, and caches the content of that as well,
+if found. When the user clicks on any link that has one of these *exact* URLs
+as its ``href`` attribute, the browser will grab the cached page, swap out the
+current ``<body>`` content with the ``<body>`` content of the cached page, and
+set the title it found for that page. Any other links will be handled normally.
 
 If you want, you can tell AngryLoader to swap out some other element than the
 ``<body>``. But take care.  AngryLoader couldn't be arsed parsing the HTML
