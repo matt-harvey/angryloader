@@ -55,8 +55,18 @@ i.e.::
 
   });
 
+Note that if you add new links to a page after it has been loaded
+(whether normally loaded or "angry-loaded"), these links will need to be "manually"
+initialized if you want them to act as fast links. You can do this as follows::
+
+  AngryLoader.initializeLinks();
+
+AngryLoader uses a marker class (``js-angry-loader-initialized``) to keep track
+of links it has already initialized, so you don't have to worry about it
+attaching behaviour to the same link twice.
+
 AngryLoader is probably best suited to sites with only a few pages that aren't
-too big.  It is probably a bad idea to make your users GET a tonne of data
-which they'll probably never see.
+too big. It is probably a bad idea to make your users GET a tonne of data which
+they'll probably never see.
 
 Oh yeah, you need jQuery. Include it somewhere before ``angry-loader.js``.

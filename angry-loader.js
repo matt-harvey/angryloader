@@ -11,6 +11,9 @@ var AngryLoader = function($) {
 
   'use strict';
 
+
+  // module-scoped variables
+
   var doc = $(document);
 
   var cache = {};
@@ -21,12 +24,15 @@ var AngryLoader = function($) {
     replaceWithin: ['<body>', '</body>']
   };
 
+
+  // initialization
+
   function initialize(options) {
     $.extend(opts, options);
     doc.ready(notifyLoaded);
     if (historyAPISupported()) {
       $(window).on('popstate', handleBack);
-      doc.on('angryLoader:load', configureLinks);
+      doc.on('angryLoader:load', initializeLinks);
       doc.ready(populateCache);
     }
   }
@@ -67,7 +73,7 @@ var AngryLoader = function($) {
     });
   }
 
-  function configureLinks() {
+  function initializeLinks(elems) {
     $('a').not('.js-angry-loader-initialized').click(function(event) {
       var url = $(this).attr('href');
       if (url in cache) {
@@ -87,7 +93,8 @@ var AngryLoader = function($) {
   }
 
   return {  // export public functions
-    initialize: initialize
+    initializeLinks: initializeLinks,
+    initialize:     initialize
   };
 
 }(jQuery);
