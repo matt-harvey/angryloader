@@ -26,7 +26,7 @@ set the page title accordingly, without any further HTTP request being made.
 Any links to URLs that not in the whitelist, however, will be handled normally.
 
 If you want, you can tell AngryLoader to swap out some other element than the
-``<body>``. But take care. For certain reasons, AngryLoader does not properly
+``<body>``. But take care. For various reasons, AngryLoader does not properly
 parse the HTML it retrieves, so as well as giving it a jQuery selector for the
 element you want to replace, you've got to tell it strings to look for when
 pulling out what it needs from the preloaded HTML::
