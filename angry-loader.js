@@ -31,6 +31,14 @@ var AngryLoader = function($) {
     }
   }
 
+  function contentBetween(str, bookends) {
+      var startAt = bookends[0];
+      var endAt = bookends[1];
+      var startPos = (startAt ? str.search(startAt) + startAt.length : 0);
+      var endPos = (endAt ? str.search(endAt) : undefined);
+      return str.slice(startPos, endPos);
+  }
+
   function handleBack(/*event*/) {
     var url = document.location.pathname;
     if (url in cache) {
@@ -50,11 +58,10 @@ var AngryLoader = function($) {
     $.each(opts.urls, function(index, url) {
       $.get(url).done(function(data, textStatus/*, jqXHR */) {
         if (textStatus === 'success') {
-          var startAt = opts.replaceWithin[0];
-          var endAt = opts.replaceWithin[1];
-          var startPos = (startAt ? data.search(startAt) + startAt.length : 0);
-          var endPos = (endAt ? data.search(endAt) : undefined);
-          cache[url] = data.slice(startPos, endPos);
+          cache[url] = {
+            content: contentBetween(data, opts.replaceWithin),
+            title: contentBetween(data, ['<title>', '</title>'])
+          };
         }
       });
     });
@@ -72,7 +79,9 @@ var AngryLoader = function($) {
   }
 
   function load(url) {
-    $(opts.selector).html(cache[url]);
+    var cached = cache[url];
+    doc.find('title').html(cached.title);
+    $(opts.selector).html(cached.content);
     $('html, body').animate({ scrollTop: 0 }, 0);
     notifyLoaded();
   }
