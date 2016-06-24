@@ -11,7 +11,6 @@ var AngryLoader = function($) {
 
   'use strict';
 
-
   // module-scoped variables
 
   var doc = $(document);
@@ -23,7 +22,6 @@ var AngryLoader = function($) {
     selector: 'body',
     replaceWithin: ['<body>', '</body>']
   };
-
 
   // core logic
 
@@ -80,7 +78,6 @@ var AngryLoader = function($) {
     }
   }
 
-
   // string utilities
 
   function contentBetween(str, bookends) {
@@ -91,19 +88,17 @@ var AngryLoader = function($) {
       return str.slice(startPos, endPos);
   }
 
-
   // feature detection
 
   function historyAPISupported() {
     return (typeof window.history !== 'undefined' && typeof window.history.pushState === 'function');
   }
 
-
   // export public functions
 
   return {
     initializeLinks: initializeLinks,
-    initialize:     initialize
+    initialize:      initialize
   };
 
 }(jQuery);
