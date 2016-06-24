@@ -10,17 +10,20 @@ fast? Then AngryLoader is for you!
 Tell AngryLoader the list of URLs you want to be fast, like so::
 
   AngryLoader.initialize({
-    urls: ['/', '/blog', '/mega']
+    urls: ['/', '/blog/', '/mega/']
   });
 
-When someone first visits your site, and after the initially visited page has
-loaded normally, AngryLoader AJAX-requests HTML from *all* the URLs you've
-given it, and caches their content in memory. It also looks in the retrieved
-content of each page for a ``<title>`` tag, and caches the content of that as well,
-if found. When the user clicks on any link that has one of these *exact* URLs
-as its ``href`` attribute, the browser will grab the cached page, swap out the
-current ``<body>`` content with the ``<body>`` content of the cached page, and
-set the title it found for that page. Any other links will be handled normally.
+When someone first visits your site, once the initially visited page has been
+requested normally and the document is "ready", AngryLoader caches the ``<body>``
+content of the current page in memory (provided its URL is among those you've
+listed), and then AJAX-requests HTML from each of the other URLs you've given
+it, and caches their ``<body>`` content as well. It also looks in each page's
+HTML for a ``<title>`` tag, and caches the content of that as well, if found.
+When the user clicks on any link that has one of the exact listed URLs as its
+``href`` attribute, the browser will grab the cached ``<body>`` content for
+that page, swap out the current ``<body>`` content with the cached content, and
+set the page title accordingly, without any further HTTP request being made.
+Any links to URLs that not in the whitelist, however, will be handled normally.
 
 If you want, you can tell AngryLoader to swap out some other element than the
 ``<body>``. But take care.  AngryLoader couldn't be arsed parsing the HTML

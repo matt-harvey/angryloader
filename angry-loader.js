@@ -49,7 +49,9 @@ var AngryLoader = function($) {
 
   function populateCache() {
     var current = currentUrl();
-    save(current, '<html>' + $('html').html() + '</html>');
+    if (opts.urls.indexOf(current) !== -1) {
+      save(current, '<html>' + $('html').html() + '</html>');
+    }
     notifyLoaded();
     $.each(opts.urls, function(index, url) {
       if (url !== current) {
