@@ -27,11 +27,12 @@ var AngryLoader = function($) {
 
   function initialize(options) {
     $.extend(opts, options);
-    doc.ready(notifyLoaded);
     if (historyAPISupported()) {
       $(window).on('popstate', handleBack);
       doc.on('angryLoader:load', initializeLinks);
       doc.ready(populateCache);
+    } else {
+      doc.ready(notifyLoaded);
     }
   }
 
@@ -47,16 +48,25 @@ var AngryLoader = function($) {
   }
 
   function populateCache() {
+    var current = currentUrl();
+    save(current, '<html>' + $('html').html() + '</html>');
+    notifyLoaded();
     $.each(opts.urls, function(index, url) {
-      $.get(url).done(function(data, textStatus/*, jqXHR */) {
-        if (textStatus === 'success') {
-          cache[url] = {
-            content: contentBetween(data, opts.replaceWithin),
-            title: contentBetween(data, ['<title>', '</title>'])
-          };
-        }
-      });
+      if (url !== current) {
+        $.get(url).done(function(data, textStatus/*, jqXHR */) {
+          if (textStatus === 'success') {
+            save(url, data);
+          }
+        });
+      }
     });
+  }
+
+  function save(url, pageContent) {
+    cache[url] = {
+      content: contentBetween(pageContent, opts.replaceWithin),
+      title: contentBetween(pageContent, ['<title>', '</title>'])
+    };
   }
 
   function load(url) {
@@ -72,10 +82,14 @@ var AngryLoader = function($) {
   }
 
   function handleBack(/*event*/) {
-    var url = document.location.pathname;
+    var url = currentUrl();
     if (url in cache) {
       load(url);
     }
+  }
+
+  function currentUrl() {
+    return document.location.pathname;
   }
 
   // string utilities
