@@ -14,21 +14,25 @@ var AngryLoader = function($) {
   // module-scoped variables
 
   var doc = $(document);
-
   var cache = {};
-
   var opts = { urls: [] };
+  var initialized = false;
 
   // core logic
 
   function initialize(options) {
-    $.extend(opts, options);
-    if (historyAPISupported()) {
-      $(window).on('popstate', handleBack);
-      doc.on('angryLoader:load', initializeLinks);
-      doc.ready(populateCache);
+    if (initialized) {
+      throw new Error('AngryLoader has already been initialized.');
     } else {
-      doc.ready(notifyLoaded);
+      $.extend(opts, options);
+      if (historyAPISupported()) {
+        $(window).on('popstate', handleBack);
+        initializeLinks();
+        doc.ready(populateCache);
+      } else {
+        doc.ready(notifyLoaded);
+      }
+      initialized = true;
     }
   }
 
