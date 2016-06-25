@@ -41,8 +41,8 @@ var AngryLoader = function($) {
       var url = $(this).attr('href');
       if (url in cache) {
         event.preventDefault();
-        window.history.pushState({}, undefined, url);
         load(url);
+        window.history.pushState({}, undefined, url);
       }
     }).addClass('js-angry-loader-initialized');
   }
