@@ -17,11 +17,7 @@ var AngryLoader = function($) {
 
   var cache = {};
 
-  var opts = {
-    urls: [],
-    selector: 'body',
-    replaceWithin: ['<body>', '</body>']
-  };
+  var opts = { urls: [] };
 
   // core logic
 
@@ -37,20 +33,20 @@ var AngryLoader = function($) {
   }
 
   function initializeLinks() {
-    $('a').not('.js-angry-loader-initialized').click(function(event) {
-      var url = $(this).attr('href');
+    doc.on('click', 'a', function(event) {
+      var url = $(event.target).attr('href');
       if (url in cache) {
         event.preventDefault();
         load(url);
         window.history.pushState({}, undefined, url);
       }
-    }).addClass('js-angry-loader-initialized');
+    });
   }
 
   function populateCache() {
     var current = currentUrl();
     if (opts.urls.indexOf(current) !== -1) {
-      save(current, '<html>' + $('html').html() + '</html>');
+      save(current, $('html').html());
     }
     notifyLoaded();
     $.each(opts.urls, function(index, url) {
@@ -65,16 +61,21 @@ var AngryLoader = function($) {
   }
 
   function save(url, pageContent) {
-    cache[url] = {
-      content: contentBetween(pageContent, opts.replaceWithin),
-      title: contentBetween(pageContent, ['<title>', '</title>'])
-    };
+    // Regexes lifted from
+    // https://github.com/defunkt/jquery-pjax/blob/master/jquery.pjax.js
+    var title = pageContent.match(/<title[^>]*>([\s\S.]*)<\/title>/i)[0];
+    var titleInnerStart = title.match(/<title[^>]*>/)[0].length;
+    var titleInner = title.slice(titleInnerStart, -'</title>'.length);
+    var body = pageContent.match(/<body[^>]*>([\s\S.]*)<\/body>/i)[0];
+    var bodyInnerStart = body.match(/<body[^>]*>/)[0].length;
+    var bodyInner = body.slice(bodyInnerStart, -'</body>'.length);
+    cache[url] = { title: titleInner, content: bodyInner };
   }
 
   function load(url) {
     var cached = cache[url];
     doc.prop('title', cached.title);
-    $(opts.selector).html(cached.content);
+    $('body').html(cached.content);
     $('html, body').animate({ scrollTop: 0 }, 0);
     notifyLoaded();
   }
@@ -94,27 +95,19 @@ var AngryLoader = function($) {
     return document.location.pathname;
   }
 
-  // string utilities
-
-  function contentBetween(str, bookends) {
-      var startAt = bookends[0];
-      var endAt = bookends[1];
-      var startPos = (startAt ? str.search(startAt) + startAt.length : 0);
-      var endPos = (endAt ? str.search(endAt) : undefined);
-      return str.slice(startPos, endPos);
-  }
-
   // feature detection
 
   function historyAPISupported() {
-    return (typeof window.history !== 'undefined' && typeof window.history.pushState === 'function');
+    return (
+      typeof window.history !== 'undefined' &&
+      typeof window.history.pushState === 'function'
+    );
   }
 
   // export public functions
 
   return {
-    initializeLinks: initializeLinks,
-    initialize:      initialize
+    initialize: initialize
   };
 
 }(jQuery);
