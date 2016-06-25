@@ -17,13 +17,13 @@ When someone first visits your site, once the initially visited page has been
 requested normally and the document is "ready", AngryLoader caches the ``<body>``
 content of the current page in memory (provided its URL is among those you've
 listed), and then AJAX-requests HTML from each of the other URLs you've given
-it, and caches their ``<body>`` content as well. It also caches the content
-of each page's ``<title>`` tag as well. When the user clicks on any link that
-has one of the exact listed URLs as its ``href`` attribute, the browser will
-grab the cached ``<body>`` content for that page, swap out the current ``<body>``
-content with the cached content, and set the page title accordingly, without any
-further HTTP request being made. Any links to URLs that not in the whitelist,
-however, will be handled normally.
+it, and caches their ``<body>`` content as well. It also caches the content of
+each page's ``<title>`` tag. When the user clicks on any link that has one of
+the exact listed URLs as its ``href`` attribute, the browser will grab the
+cached ``<body>`` content for that page, swap out the current ``<body>``
+content with the cached content, and set the page title accordingly, without
+any further HTTP request being made. Any links to URLs that not in the
+whitelist, however, will be handled normally.
 
 AngryLoader uses the HTML5 history API to manage browser history so that, for
 the user, it's just like they're navigating to a different page (but fast),
