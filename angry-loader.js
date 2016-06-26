@@ -17,6 +17,8 @@ var AngryLoader = function($) {
   var cache = {};
   var opts = { urls: [] };
   var initialized = false;
+  var extractTitleContent = innerContentExtractor('title');
+  var extractBodyContent = innerContentExtractor('body');
 
   // core logic
 
@@ -65,15 +67,10 @@ var AngryLoader = function($) {
   }
 
   function save(url, pageContent) {
-    // Regexes lifted from
-    // https://github.com/defunkt/jquery-pjax/blob/master/jquery.pjax.js
-    var title = pageContent.match(/<title[^>]*>([\s\S.]*)<\/title>/i)[0];
-    var titleInnerStart = title.match(/<title[^>]*>/)[0].length;
-    var titleInner = title.slice(titleInnerStart, -'</title>'.length);
-    var body = pageContent.match(/<body[^>]*>([\s\S.]*)<\/body>/i)[0];
-    var bodyInnerStart = body.match(/<body[^>]*>/)[0].length;
-    var bodyInner = body.slice(bodyInnerStart, -'</body>'.length);
-    cache[url] = { title: titleInner, content: bodyInner };
+    cache[url] = {
+      title: extractTitleContent(pageContent),
+      content: extractBodyContent(pageContent)
+    };
   }
 
   function load(url) {
@@ -97,6 +94,23 @@ var AngryLoader = function($) {
 
   function currentUrl() {
     return document.location.pathname;
+  }
+
+  function innerContentExtractor(tagName) {
+    // Regexes adapted from
+    // https://github.com/defunkt/jquery-pjax/blob/master/jquery.pjax.js
+    // Use a closure to avoid regexes being recreated multiple times.
+    var openingMatcher = '<' + tagName + '[^>]*>';
+    var openingRegExp = new RegExp(openingMatcher, 'i');
+    var contentMatcher = '([\\s\\S.]*)';
+    var closingMatcher = '</' + tagName + '>';
+    var elemRegExp = new RegExp(openingMatcher + contentMatcher + closingMatcher, 'i');
+
+    return function(html) {
+      var elem = html.match(elemRegExp)[0];
+      var elemInnerStart = elem.match(openingRegExp)[0].length;
+      return elem.slice(elemInnerStart, -closingMatcher.length);
+    };
   }
 
   // feature detection
