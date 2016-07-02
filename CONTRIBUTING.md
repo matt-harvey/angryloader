@@ -41,3 +41,13 @@ Assuming that you don't see any red, you're ready to go. Just be sure to run
 5. Open `test/*.html` unit test file(s) in actual browser to ensure tests pass everywhere.
 6. Update the documentation to reflect any changes.
 7. Push to your fork and submit a pull request.
+
+## Known issues
+
+Running tests. If `grunt` fails, you might need to do:
+
+```
+  node node_modules/phantomjs-prebuilt/install.js
+```
+
+This appears to be a bug with phantomjs-prebuilt (see https://github.com/Medium/phantomjs/issues/533).
