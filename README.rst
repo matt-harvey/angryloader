@@ -1,6 +1,8 @@
 AngryLoader
 ===========
 
+TODO Change this to .md.
+
 Similar to Turbolinks and PJAX, AngryLoader enables fast navigation within your
 site.  But AngryLoader is impatient, and unsophisticated. Want to force a bunch
 of preemptive GET requests on your users for pages they might not visit, just
@@ -50,3 +52,13 @@ too big. It is probably a bad idea to make your users GET a tonne of data which
 they'll probably never see.
 
 Oh yeah, you need jQuery. Include it somewhere before ``angry-loader.js``.
+
+
+Known issues
+************
+
+Running tests. If `grunt` fails, you might need to do::
+
+  node node_modules/phantomjs-prebuilt/install.js
+
+This appears to be a bug with phantomjs-prebuilt (see https://github.com/Medium/phantomjs/issues/533).

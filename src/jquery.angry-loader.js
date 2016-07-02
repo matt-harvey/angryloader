@@ -1,45 +1,46 @@
 /*!
- * AngryLoader
- * http://github.com/matt-harvey/angryloader/
- *
  * Copyright (c) 2016 Matthew Harvey
- * Released under the MIT license
- * http://github.com/matt-harvey/angryloader/blob/master/LICENSE.txt
+ * Licensed under the MIT license.
  */
-
-var AngryLoader = function($) {
+(function($, document, $document) {
 
   'use strict';
 
-  // module-scoped variables
-
-  var doc = $(document);
   var cache = {};
-  var opts = { urls: [] };
   var initialized = false;
-  var extractTitleContent = innerContentExtractor('title');
-  var extractBodyContent = innerContentExtractor('body');
 
-  // core logic
-
-  function initialize(options) {
+  var config = $.angryLoader = function(options) {
+    options = $.extend({}, config.defaultOptions, options);
     if (initialized) {
       throw new Error('AngryLoader has already been initialized.');
     } else {
-      $.extend(opts, options);
-      if (historyAPISupported()) {
-        $(window).on('popstate', handleBack);
-        initializeLinks();
-        doc.ready(populateCache);
-      } else {
-        doc.ready(notifyLoaded);
-      }
+      initialize(options);
       initialized = true;
+    }
+  };
+
+  config.defaultOptions = {
+    urls: []
+  };
+
+  // implementation
+
+  function initialize(options) {
+    if (historyAPISupported()) {
+      $(window).on('popstate', function() {
+        handleBack();
+      });
+      initializeLinks();
+      $document.ready(function() {
+        populateCache(options.urls);
+      });
+    } else {
+      $document.ready(notifyLoaded);
     }
   }
 
   function initializeLinks() {
-    doc.on('click', 'a', function(event) {
+    $document.on('click', 'a', function(event) {
       var url = $(event.target).attr('href');
       if (url in cache) {
         event.preventDefault();
@@ -49,24 +50,26 @@ var AngryLoader = function($) {
     });
   }
 
-  function populateCache() {
+  function populateCache(urls) {
     var current = currentUrl();
-    if (opts.urls.indexOf(current) !== -1) {
-      save(current, $('html').html());
+    var extractTitleContent = innerContentExtractor('title');
+    var extractBodyContent = innerContentExtractor('body');
+    if (urls.indexOf(current) !== -1) {
+      save(current, $('html').html(), extractTitleContent, extractBodyContent);
     }
     notifyLoaded();
-    $.each(opts.urls, function(index, url) {
+    $.each(urls, function(index, url) {
       if (url !== current) {
         $.get(url).done(function(data, textStatus/*, jqXHR */) {
           if (textStatus === 'success') {
-            save(url, data);
+            save(url, data, extractTitleContent, extractBodyContent);
           }
         });
       }
     });
   }
 
-  function save(url, pageContent) {
+  function save(url, pageContent, extractTitleContent, extractBodyContent) {
     cache[url] = {
       title: extractTitleContent(pageContent),
       content: extractBodyContent(pageContent)
@@ -75,17 +78,17 @@ var AngryLoader = function($) {
 
   function load(url) {
     var cached = cache[url];
-    doc.prop('title', cached.title);
+    $document.prop('title', cached.title);
     $('body').html(cached.content);
     $('html, body').animate({ scrollTop: 0 }, 0);
     notifyLoaded();
   }
 
   function notifyLoaded() {
-    doc.trigger('angryLoader:load');
+    $document.trigger('angryLoader:load');
   }
 
-  function handleBack(/*event*/) {
+  function handleBack() {
     var url = currentUrl();
     if (url in cache) {
       load(url);
@@ -122,11 +125,4 @@ var AngryLoader = function($) {
     );
   }
 
-  // export public functions
-
-  return {
-    initialize: initialize
-  };
-
-}(jQuery);
-
+})(jQuery, document, jQuery(document));

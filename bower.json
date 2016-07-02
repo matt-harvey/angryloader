@@ -1,0 +1,19 @@
+{
+  "name": "jquery-angry-loader",
+  "description": "crude, rude, fast internal site navigation",
+  "main": "./src/jquery.angry-loader.js",
+  "version": "0.2.0",
+  "dependencies": {
+    "jquery": ">=1.11"
+  },
+  "devDependencies": {
+    "qunit": "~1.12.0",
+    "jquery": ">=1.11"
+  },
+  "ignore": [
+    "CONTRIBUTING.md",
+    "test/",
+    ".travis.yml"
+  ],
+  "license": "MIT"
+}
