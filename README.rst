@@ -1,6 +1,11 @@
 AngryLoader
 ===========
 
+**NOTE** this project has been superseded by `jquery-angry-loader
+<http://github.com/matt-harvey/jquery-angry-loader/>`_.
+
+---
+
 Similar to Turbolinks and PJAX, AngryLoader enables fast navigation within your
 site.  But AngryLoader is impatient, and unsophisticated. Want to force a bunch
 of preemptive GET requests on your users for pages they might not visit, just
